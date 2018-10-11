@@ -8,21 +8,21 @@ import os
 from shutil import copyfile
 
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 class WallpaperChanger:
 
 
     def __init__(self):
         self.api_token = 'tPuB5DWqYzZ2a01pNxQbHb8Q2bZD6I81jphtKAuC'
         self.api_url_base = 'https://api.nasa.gov/planetary/apod?api_key={0}'.format(self.api_token)
+        # logging.basicConfig(filename='logs\\errors.log', level=logging.ERROR)
 
-        logging.basicConfig(filename='logs\\errors.log', level=logging.ERROR)
-
-        self.current_json_response = None
+        self.load_last_image_data()
 
         self.date = str(datetime.datetime.now())[:10]
         self.current_image_url = None
-        self.current_image_path = \
-            'C:\\Users\\Illya\\Repositories\\DesktopChangeApp\\saved_wallpapers\\current_image.png'
+        self.current_image_path = os.path.join(ROOT_DIR, 'saved_wallpapers\\current_image.png')
 
     def set_random_date(self):
         self.date = '{}-{}-{}'.format(rng.randint(2000, 2018), rng.randint(1, 13), rng.randint(1, 28))
@@ -35,7 +35,7 @@ class WallpaperChanger:
 
 
     def change_wallpaper_to_image(self):
-        with open('data.json', 'w') as outfile:
+        with open(os.path.join(ROOT_DIR, 'data.json'), 'w') as outfile:
             json.dump(self.current_json_response, outfile)
         ctypes.windll.user32.SystemParametersInfoW(20, 0, self.current_image_path, 0)
         print('wallpaper was successfully changed')
@@ -83,10 +83,11 @@ class WallpaperChanger:
 
     def save_image(self):
         self.load_last_image_data()
-        copyfile(self.current_image_path, 'saved_wallpapers\\{}.png'.format(self.current_json_response['title']))
+        copyfile(self.current_image_path, os.path.join(ROOT_DIR, 'saved_wallpapers\\{}.png'.format(self.current_json_response['title'])))
+        print('saved image name: saved_wallpapers\\{}.png'.format(self.current_json_response['title']))
 
     def load_last_image_data(self):
-        with open('data.json') as f:
+        with open(os.path.join(ROOT_DIR, 'data.json')) as f:
             self.current_json_response = json.load(f)
 
 
