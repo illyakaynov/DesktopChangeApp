@@ -84,7 +84,6 @@ def create_temp_folder_if_not_exist():
 def get_image_name(data_path):
     with open(data_path) as f:
         json_data = json.load(f)
-    print(json_data['title'].replace(' ', '_'))
     return json_data['title'].replace(' ', '_').replace(':', '_')
 
 
