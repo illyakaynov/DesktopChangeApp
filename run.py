@@ -1,7 +1,7 @@
 import wallpaper_changer as wc
 import sys
 
-wc.save_current_image()
+wc.set_random_wallpaper()
 
 
 
