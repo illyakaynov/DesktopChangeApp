@@ -1,18 +1,18 @@
-from wallpaper_changer import WallpaperChanger
+import wallpaper_changer as wc
 import sys
 
-wc = WallpaperChanger()
+wc.save_current_image()
 
 
 
-while(True):
-    command = input('Enter your command:\n')
-    if command == 'random':
-        wc.set_random_wallpaper()
-    elif command == 'save':
-        wc.save_image()
-    elif command == 'exit':
-        break
+# while(True):
+#     command = input('Enter your command:\n')
+#     if command == 'random':
+#         wc.set_random_wallpaper()
+#     elif command == 'save':
+#         wc.save_image()
+#     elif command == 'exit':
+#         break
 
 
 
