@@ -30,6 +30,18 @@ def set_random_wallpaper():
             break
         date = get_random_date()
 
+def set_current_APOD():
+    date = get_current_date()
+
+    while True:
+        data = get_json_from_api(api_url_base, api_token, date)
+        if data['media_type'] == 'image':
+            fetch_image(data['hdurl'], temp_image_path)
+            change_wallpaper_to_image(temp_image_path)
+            save_image_data(data, json_path)
+            break
+        date = get_random_date()
+
 
 def save_current_image():
     copyfile(temp_image_path, os.path.join(saved_wallpapers_path, get_image_name(json_path) + '.png'))
@@ -64,6 +76,8 @@ def save_image_data(json_data, path):
 def get_random_date():
     return '{}-{}-{}'.format(rng.randint(2000, 2018), rng.randint(1, 13), rng.randint(1, 28))
 
+def get_current_date():
+    return str(datetime.datetime.now())[:10]
 
 def change_wallpaper_to_image(path):
     ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
