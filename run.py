@@ -1,17 +1,17 @@
 import wallpaper_changer as wc
 import sys
+import click
 
-while(True):
-    command = input('Enter your command:\n')
-    if command == 'random':
-        wc.set_random_wallpaper()
-    elif command == 'save':
-        wc.save_current_image()
-    elif command == 'exit':
-        break
-    elif command == 'current':
-        wc.set_current_APOD()
+commands = {'current': wc.set_current_APOD,
+            'random': wc.set_random_wallpaper,
+            'save': wc.save_current_image}
 
+@click.command()
+@click.argument('command')
+def run(command):
+   commands[command]()
 
 
 
+if __name__ == "__main__":
+    run()
