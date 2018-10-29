@@ -12,6 +12,7 @@ def get_image_url(image_date):
 
     response = requests.get(api_url_base, params=params)
 
+
     if response.status_code == 200:
         data = json.loads(response.content.decode('utf-8'))
         if data['media_type'] == 'image':

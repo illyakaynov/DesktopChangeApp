@@ -17,6 +17,10 @@ json_path = os.path.join(ROOT_DIR, 'temp\\data.json')
 
 logging.basicConfig(filename='logs\\errors.log', level=logging.ERROR)
 
+def get_image_info():
+    with open(json_path) as f:
+        json_data = json.load(f)
+    print(json_data['explanation'])
 
 def set_random_wallpaper():
     date = get_random_date()
