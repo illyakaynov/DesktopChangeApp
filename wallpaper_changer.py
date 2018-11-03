@@ -6,6 +6,10 @@ import datetime
 import random as rng
 import os
 from shutil import copyfile
+from contextlib import closing
+from requests.exceptions import RequestException
+import logging
+
 
 api_token = 'tPuB5DWqYzZ2a01pNxQbHb8Q2bZD6I81jphtKAuC'
 api_url_base = 'https://api.nasa.gov/planetary/apod'
@@ -15,7 +19,7 @@ saved_wallpapers_path = os.path.join(ROOT_DIR, 'saved_wallpapers')
 temp_image_path = os.path.join(ROOT_DIR, 'temp\\current_image.png')
 json_path = os.path.join(ROOT_DIR, 'temp\\data.json')
 
-logging.basicConfig(filename='logs\\errors.log', level=logging.ERROR)
+#logging.basicConfig(filename='logs\\errors.log', level=logging.DEBUG)
 
 def get_image_info():
     with open(json_path) as f:
@@ -65,6 +69,26 @@ def get_json_from_api(api_url, token, date):
     logging.error(log_message)
 
 
+
+def simple_get(url):
+    """
+    Attempts to get the content at `url` by making an HTTP GET request.
+    If the content-type of response is some kind of HTML/XML, return the
+    text content, otherwise return None.
+    """
+    try:
+        with closing(requests.get(url, stream=True)) as resp:
+            if is_good_response(resp):
+                return resp.content
+            else:
+                return None
+
+    except RequestException as e:
+        logging.debug('Error during requests to {0} : {1}'.format(url, str(e)))
+        return None
+
+
+
 def fetch_image(url, temp_path):
     image_bin = requests.get(url)
 
@@ -103,6 +127,17 @@ def get_image_name(data_path):
     with open(data_path) as f:
         json_data = json.load(f)
     return json_data['title'].replace(' ', '_').replace(':', '_')
+
+
+
+def is_good_response(resp):
+    """
+    Returns True if the response seems to be HTML, False otherwise.
+    """
+    content_type = resp.headers['Content-Type'].lower()
+    return (resp.status_code == 200
+            and content_type is not None
+            and content_type.find('html') > -1)
 
 
 create_saved_wallpapers_folder_if_not_exists()

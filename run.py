@@ -7,11 +7,15 @@ commands = {'current': wc.set_current_APOD,
             'save': wc.save_current_image,
             'info': wc.get_image_info}
 
+
 @click.command()
 @click.argument('command')
 def run(command):
-   commands[command]()
+    commands.get(command, no_such_command)()
 
+
+def no_such_command():
+    print('No such command. Use current, random or save')
 
 if __name__ == "__main__":
     run()
